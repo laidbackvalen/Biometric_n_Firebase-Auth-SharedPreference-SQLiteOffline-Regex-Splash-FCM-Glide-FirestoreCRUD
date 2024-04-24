@@ -23,11 +23,13 @@ import com.example.firestorepracticejobinterview.utils.firebase.FirebaseUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.UploadTask;
 
 public class Create_User_Details extends AppCompatActivity {
     private ActivityCreateUserDetailsBinding binding;
     String url;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,15 +52,17 @@ public class Create_User_Details extends AppCompatActivity {
         binding.createUserLayoutIncluded.addDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //ModelClass
                 ModelClass modelClass = new ModelClass(binding.createUserLayoutIncluded.name.getText().toString().trim()
-                        , binding.createUserLayoutIncluded.phone.getText().toString().trim(), binding.createUserLayoutIncluded.phone.getText().toString(),
-                        url,
-                        String.valueOf(System.currentTimeMillis()));
+                        , FirebaseAuth.getInstance().getCurrentUser().getEmail(), binding.createUserLayoutIncluded.phone.getText().toString(),
+                        url, String.valueOf(System.currentTimeMillis()));
+
                 FirebaseUtil.firebaseFirestore(modelClass, Create_User_Details.this);
             }
         });
 
     }
+
     ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
         @Override
         public void onActivityResult(Uri uri_result) {

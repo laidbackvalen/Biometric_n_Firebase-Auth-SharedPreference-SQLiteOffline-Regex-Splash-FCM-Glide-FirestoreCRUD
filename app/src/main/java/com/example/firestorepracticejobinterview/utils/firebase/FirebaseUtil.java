@@ -11,9 +11,11 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.example.firestorepracticejobinterview.R;
+import com.example.firestorepracticejobinterview.activities.MainActivity;
 import com.example.firestorepracticejobinterview.firebaseCRUD.Create_User_Details;
 import com.example.firestorepracticejobinterview.firebaseCRUD.Retrieve_User_Details;
 import com.example.firestorepracticejobinterview.model.ModelClass;
+import com.example.firestorepracticejobinterview.preferences.UserSharedPreferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -61,7 +63,30 @@ public class FirebaseUtil {
                     user = task.getResult().getUser(); //if the user created is email verified
                     assert user != null;
                     if (user.isEmailVerified()) {
-                        context.startActivity(new Intent(context, Create_User_Details.class));
+                        UserSharedPreferences preferences = new UserSharedPreferences(context);
+                        preferences.setUserInfoPreferences(email, password);//shared preferences
+
+
+                        //if data exist like name is not null //use addValuEventListener //DataSnapshot
+                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        assert firebaseUser != null;
+                        FirebaseFirestore.getInstance()
+                                .collection("User")
+                                .document(Objects.requireNonNull(firebaseUser.getEmail()))
+                                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                                        if (value.exists()) {
+                                            Map<String, Object> map = value.getData();
+                                            String name = value.getData().get("name").toString();
+                                            if (name != null) {
+                                                context.startActivity(new Intent(context, MainActivity.class));
+                                            } else {
+                                                context.startActivity(new Intent(context, Create_User_Details.class));
+                                            }
+                                        }
+                                    }
+                                });
                     } else {
                         Toast.makeText(context, "Email is not verified!", Toast.LENGTH_SHORT).show();
                     }
