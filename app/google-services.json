@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "783349493757",
+    "project_id": "firestorepracticejobinterview",
+    "storage_bucket": "firestorepracticejobinterview.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783349493757:android:b8784ae72010c7bf9bf394",
+        "android_client_info": {
+          "package_name": "com.example.firestorepracticejobinterview"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDghG4IFVQDWncq3RtD22RtqsLs4JVZp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
