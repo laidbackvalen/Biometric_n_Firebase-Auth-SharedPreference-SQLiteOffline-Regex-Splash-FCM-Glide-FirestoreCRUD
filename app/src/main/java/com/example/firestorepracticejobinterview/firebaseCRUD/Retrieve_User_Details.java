@@ -28,7 +28,11 @@ public class Retrieve_User_Details extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-      FirebaseUtil.getUserInformation(binding.usernameRetrieved,binding.userEmailRetrieved,binding.userPhoneRetrieved,null,this);
+      FirebaseUtil.getUserInformation(binding.usernameRetrieved,
+              binding.userEmailRetrieved,
+              binding.userPhoneRetrieved,
+              binding.retrieveUserImage
+              ,this);
 
     }
 }

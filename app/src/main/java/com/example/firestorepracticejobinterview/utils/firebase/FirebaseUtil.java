@@ -9,6 +9,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
+import com.example.firestorepracticejobinterview.R;
 import com.example.firestorepracticejobinterview.firebaseCRUD.Create_User_Details;
 import com.example.firestorepracticejobinterview.firebaseCRUD.Retrieve_User_Details;
 import com.example.firestorepracticejobinterview.model.ModelClass;
@@ -125,9 +127,15 @@ public class FirebaseUtil {
                             String name = value.getData().get("name").toString();
                             String email = value.getData().get("email").toString();
                             String phone = value.getData().get("phone").toString();
+                            String image = value.getData().get("url").toString();
                             nameTextView.setText(name);
                             emailTextView.setText(email);
                             phoneTextView.setText(phone);
+                            Glide.with(context)
+                                    .load(image)
+                                    .centerCrop()
+                                    .placeholder(R.drawable.baseline_person_24)
+                                    .into(userImageView);
 //                            String s = value.getData().toString();
                         }
                     }
