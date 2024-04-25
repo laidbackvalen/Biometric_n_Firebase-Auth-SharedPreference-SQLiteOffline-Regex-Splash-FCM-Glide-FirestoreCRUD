@@ -15,7 +15,7 @@ import com.example.firestorepracticejobinterview.constants.Constants;
 import com.example.firestorepracticejobinterview.databinding.ActivityUserLoginBinding;
 import com.example.firestorepracticejobinterview.preferences.UserSharedPreferences;
 import com.example.firestorepracticejobinterview.utils.firebase.FirebaseUtil;
-import com.example.firestorepracticejobinterview.utils.others.Java_Regex;
+import com.example.firestorepracticejobinterview.utils.JAVAFunctions.Java_Regex;
 
 import java.util.HashMap;
 

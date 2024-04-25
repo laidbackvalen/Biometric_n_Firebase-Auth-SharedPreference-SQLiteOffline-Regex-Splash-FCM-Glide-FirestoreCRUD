@@ -1,4 +1,4 @@
-package com.example.firestorepracticejobinterview.utils.others;
+package com.example.firestorepracticejobinterview.utils.JAVAFunctions;
 
 import com.example.firestorepracticejobinterview.constants.Constants;
 import java.util.regex.Matcher;
