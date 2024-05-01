@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.example.firestorepracticejobinterview.R;
 import com.example.firestorepracticejobinterview.databinding.ActivityUserRegistrationBinding;
+import com.example.firestorepracticejobinterview.utils.JAVAFunctions.Java_Regex;
 import com.example.firestorepracticejobinterview.utils.firebase.FirebaseUtil;
 
 public class User_Registration extends AppCompatActivity {
@@ -27,10 +28,28 @@ public class User_Registration extends AppCompatActivity {
         binding.registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseUtil.registerUser(binding.txtInpEdTxtEmailRegistration.getText().toString().trim(),
-                        binding.txtInpEdTxtPasswordRegistration.getText().toString().trim(), User_Registration.this);
-                finish();
+
+                String email = binding.txtInpEdTxtEmailRegistration.getText().toString().trim();
+                String password = binding.txtInpEdTxtPasswordRegistration.getText().toString().trim();
+                if (!Java_Regex.emailValidator(email)) {
+                    binding.txtInpEdTxtEmailRegistration.setError("Email Doesn't Match Requirement");
+                    binding.txtInpEdTxtEmailRegistration.setError("Wrongly Added");
+                } else if (Java_Regex.emailValidator(email)) {
+                    if (!Java_Regex.passwordValidator(password)) {
+                        binding.txtInpEdTxtPasswordRegistration.setError("Password must:\n" +
+                                "- Be at least 8 characters long\n" +
+                                "- Contain at least one uppercase letter\n" +
+                                "- Contain at least one lowercase letter\n" +
+                                "- Contain at least one digit\n" +
+                                "- Contain at least one special character (@$!%*?&)");
+                    } else {
+                        FirebaseUtil.registerUser(email, password, User_Registration.this);
+                        finish();
+                    }
+                }
             }
+
+
         });
     }
 }

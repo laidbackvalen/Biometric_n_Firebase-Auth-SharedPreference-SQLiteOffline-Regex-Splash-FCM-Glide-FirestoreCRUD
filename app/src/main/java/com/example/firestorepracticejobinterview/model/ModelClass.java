@@ -12,12 +12,13 @@ public class ModelClass {
     }
 
     //Parameterized constructor
-    public ModelClass(String name, String email, String phone, String url, String timeStamp) {
+    public ModelClass(String name, String email, String phone, String url, String timeStamp ) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.url = url;
         this.timeStamp = timeStamp;
+
     }
 
     public String getName() {
@@ -36,7 +37,7 @@ public class ModelClass {
         return url;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -44,17 +45,20 @@ public class ModelClass {
         this.email = email;
     }
 
-    public void setPhone(String phone){
+    public void setPhone(String phone) {
         this.phone = phone;
     }
-    public void setUrl(String url){
+
+    public void setUrl(String url) {
         this.url = url;
     }
 
     public String getTimeStamp() {
         return timeStamp;
     }
+
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
+
 }

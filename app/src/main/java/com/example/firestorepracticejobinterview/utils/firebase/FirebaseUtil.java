@@ -11,9 +11,9 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.example.firestorepracticejobinterview.R;
+import com.example.firestorepracticejobinterview.SQLiteLocalDatabase.DBhelper;
 import com.example.firestorepracticejobinterview.activities.MainActivity;
 import com.example.firestorepracticejobinterview.firebaseCRUD.Create_User_Details;
-import com.example.firestorepracticejobinterview.firebaseCRUD.Retrieve_User_Details;
 import com.example.firestorepracticejobinterview.model.ModelClass;
 import com.example.firestorepracticejobinterview.preferences.UserSharedPreferences;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,11 +40,11 @@ public class FirebaseUtil {
     //DocumentReference documentReference = FirebaseFirestore.getInstance().collection("user").document(user.getEmail());
     public static Task<Void> firebaseFirestore(ModelClass modelClass, Context context) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        return firestore.collection("User").document(user.getEmail()).set(modelClass).addOnCompleteListener(new OnCompleteListener<Void>() {
+        return firestore.collection("User").document(user.getUid()).set(modelClass).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(context, "Data Added Successfully!", Toast.LENGTH_SHORT).show();
-                context.startActivity(new Intent(context, Retrieve_User_Details.class));
+                context.startActivity(new Intent(context, MainActivity.class));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -65,28 +65,7 @@ public class FirebaseUtil {
                     if (user.isEmailVerified()) {
                         UserSharedPreferences preferences = new UserSharedPreferences(context);
                         preferences.setUserInfoPreferences(email, password);//shared preferences
-
-
-                        //if data exist like name is not null //use addValuEventListener //DataSnapshot
-                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                        assert firebaseUser != null;
-                        FirebaseFirestore.getInstance()
-                                .collection("User")
-                                .document(Objects.requireNonNull(firebaseUser.getEmail()))
-                                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                                        if (value.exists()) {
-                                            Map<String, Object> map = value.getData();
-                                            String name = value.getData().get("name").toString();
-                                            if (name != null) {
-                                                context.startActivity(new Intent(context, MainActivity.class));
-                                            } else {
-                                                context.startActivity(new Intent(context, Create_User_Details.class));
-                                            }
-                                        }
-                                    }
-                                });
+                        context.startActivity(new Intent(context, Create_User_Details.class));
                     } else {
                         Toast.makeText(context, "Email is not verified!", Toast.LENGTH_SHORT).show();
                     }
@@ -133,38 +112,33 @@ public class FirebaseUtil {
 
     //   StorageReference
     public static StorageReference firebaseStorage() {
-        return FirebaseStorage.getInstance().getReference().child("Images")
-                .child(Objects.requireNonNull(user.getEmail()))
-                .child("IMG_" + System.currentTimeMillis());
+        return FirebaseStorage.getInstance().getReference().child("Images").child(Objects.requireNonNull(user.getUid())).child("IMG_" + System.currentTimeMillis());
     }
 
     public static void getUserInformation(TextView nameTextView, TextView emailTextView, TextView phoneTextView, ImageView userImageView, Context context) {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert firebaseUser != null;
-        FirebaseFirestore.getInstance()
-                .collection("User")
-                .document(Objects.requireNonNull(firebaseUser.getEmail()))
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (value.exists()) {
-                            Map<String, Object> map = value.getData();
-                            String name = value.getData().get("name").toString();
-                            String email = value.getData().get("email").toString();
-                            String phone = value.getData().get("phone").toString();
-                            String image = value.getData().get("url").toString();
-                            nameTextView.setText(name);
-                            emailTextView.setText(email);
-                            phoneTextView.setText(phone);
-                            Glide.with(context)
-                                    .load(image)
-                                    .centerCrop()
-                                    .placeholder(R.drawable.baseline_person_24)
-                                    .into(userImageView);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
+        FirebaseFirestore.getInstance().collection("User").document(Objects.requireNonNull(user.getUid())).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (value.exists()) {
+
+                        Map<String, Object> map = value.getData();
+                    String name = value.getData().get("name").toString();
+                    String email = "";
+                    String phone = value.getData().get("phone").toString();
+                    String image = value.getData().get("url").toString();
+                    String time = value.getData().get("timeStamp").toString();
+
+                    //setting it to required views from firebase
+                    nameTextView.setText(name);
+                    emailTextView.setText(email);
+                    phoneTextView.setText(phone);
+                    Glide.with(context).load(image).centerCrop().placeholder(R.drawable.baseline_person_24).into(userImageView);
 //                            String s = value.getData().toString();
-                        }
-                    }
-                });
+                }
+            }
+        });
     }
 
 }

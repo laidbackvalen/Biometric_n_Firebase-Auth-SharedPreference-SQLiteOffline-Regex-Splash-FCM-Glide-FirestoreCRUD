@@ -1,5 +1,6 @@
 package com.example.firestorepracticejobinterview.firebaseCRUD;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -11,12 +12,15 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.firestorepracticejobinterview.R;
+import com.example.firestorepracticejobinterview.SQLiteLocalDatabase.DBhelper;
+import com.example.firestorepracticejobinterview.activities.MainActivity;
 import com.example.firestorepracticejobinterview.databinding.ActivityCreateUserDetailsBinding;
 import com.example.firestorepracticejobinterview.model.ModelClass;
 import com.example.firestorepracticejobinterview.utils.firebase.FirebaseUtil;
@@ -24,11 +28,20 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.Map;
+import java.util.Objects;
 
 public class Create_User_Details extends AppCompatActivity {
     private ActivityCreateUserDetailsBinding binding;
     String url;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +55,26 @@ public class Create_User_Details extends AppCompatActivity {
             return insets;
         });
 
+
+
+
+
+
+        //if data exist like name is not null //use addValuEventListener //DataSnapshot
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert firebaseUser != null;
+        FirebaseFirestore.getInstance().collection("User").document(Objects.requireNonNull(firebaseUser.getUid())).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (value.exists()) {
+                    Map<String, Object> map = value.getData();
+                    String name = value.getData().get("name").toString();
+                    if (name != null) {
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    }
+                }
+            }
+        });
         binding.createUserLayoutIncluded.userImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,10 +87,16 @@ public class Create_User_Details extends AppCompatActivity {
             public void onClick(View view) {
                 //ModelClass
                 ModelClass modelClass = new ModelClass(binding.createUserLayoutIncluded.name.getText().toString().trim()
-                        , FirebaseAuth.getInstance().getCurrentUser().getEmail(), binding.createUserLayoutIncluded.phone.getText().toString(),
+                        , null, binding.createUserLayoutIncluded.phone.getText().toString(),
                         url, String.valueOf(System.currentTimeMillis()));
 
                 FirebaseUtil.firebaseFirestore(modelClass, Create_User_Details.this);
+//
+//                dBhelper.addUserDetailsToSQLiteDdatabase("v", "a", "l", "e", "n");
+//                //Adding  Data OFFLINE
+
+
+
             }
         });
 
