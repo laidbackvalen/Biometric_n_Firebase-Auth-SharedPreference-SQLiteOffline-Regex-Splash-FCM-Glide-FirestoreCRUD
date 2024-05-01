@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.firestorepracticejobinterview.R;
 import com.example.firestorepracticejobinterview.SQLiteLocalDatabase.DBhelper;
 import com.example.firestorepracticejobinterview.activities.MainActivity;
@@ -87,13 +89,10 @@ public class Create_User_Details extends AppCompatActivity {
             public void onClick(View view) {
                 //ModelClass
                 ModelClass modelClass = new ModelClass(binding.createUserLayoutIncluded.name.getText().toString().trim()
-                        , null, binding.createUserLayoutIncluded.phone.getText().toString(),
+                        , firebaseUser.getUid(), binding.createUserLayoutIncluded.phone.getText().toString(),
                         url, String.valueOf(System.currentTimeMillis()));
-
                 FirebaseUtil.firebaseFirestore(modelClass, Create_User_Details.this);
-//
-//                dBhelper.addUserDetailsToSQLiteDdatabase("v", "a", "l", "e", "n");
-//                //Adding  Data OFFLINE
+
 
 
 
@@ -131,4 +130,12 @@ public class Create_User_Details extends AppCompatActivity {
             });
         }
     });
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Cancel Glide requests
+        Glide.with(this).clear((ImageView)findViewById(R.id.userImage));
+    }
 }

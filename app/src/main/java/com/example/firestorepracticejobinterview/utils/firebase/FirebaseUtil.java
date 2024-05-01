@@ -122,7 +122,6 @@ public class FirebaseUtil {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (value.exists()) {
-
                         Map<String, Object> map = value.getData();
                     String name = value.getData().get("name").toString();
                     String email = "";
@@ -134,7 +133,9 @@ public class FirebaseUtil {
                     nameTextView.setText(name);
                     emailTextView.setText(email);
                     phoneTextView.setText(phone);
-                    Glide.with(context).load(image).centerCrop().placeholder(R.drawable.baseline_person_24).into(userImageView);
+                    Glide.with(context.getApplicationContext()).load(image).centerCrop().placeholder(R.drawable.baseline_person_24).into(userImageView);
+
+
 //                            String s = value.getData().toString();
                 }
             }
